@@ -19,26 +19,26 @@ class Operation:
             # Need checking
         # IS keyword also need checking
         #args[3] is the value to be assigned
-        if len(args) == 3:
+        if len(args) == 4:
             if args[3] in self.variables:
                 print("arg[3] is in variables")
-                self.variables[args[1]] = args[3]
+                self.variables[args[1]] = self.variables[args[3]]
             else:
                 self.variables[args[1]] = args[3]
         else:
-            for keyword in self.arithmetic: # IF expression is encountered
+            for keyword in self.arithmetic: # IF expression (ADD,SUB..) is encountered
                 if args[3] == keyword: 
-                    #if variables find if it is in dictionary
+                    #check if adding variables, find if it is in dictionary
                     if args[4] in self.variables:
                         args[4] = self.variables[args[4]]
                         print(args)
                     if args[5] in self.variables:
                         args[5] = self.variables[args[5]]
                         print(args)
+                    #check if datatypecompatible
                     typeCompatible = self.numberChecker(args)
-                    #check if compatible
                     if typeCompatible:
-                        args[3] = self.arithmetic[keyword](args)
+                        args[3] = self.arithmetic[keyword](args) 
                         self.variables[args[1]] = args[3]
                     else:
                         print("invalid")
@@ -46,6 +46,7 @@ class Operation:
         print(self.variables)
 
     def beg(self, args):
+        # args = [BEG '<varname>']
         if args[1] in self.variables:
             value = input("INPUT: ")
             self.variables[args[1]] = value
@@ -88,11 +89,8 @@ class Operation:
             args[5] = result[1]
             status = True
         return status
-           
-            
-                
 
-    def typeErrorchecker(self):
+    def varNameChecker(self):
         print("Suri can't do that")
     # https://stackoverflow.com/questions/36330860/pythonically-check-if-a-variable-name-is-valid
 #       User this for typchecking
