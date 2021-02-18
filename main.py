@@ -23,7 +23,6 @@ def main():
             for c in Commands.keys():
                 if args[0] == c[:len(args[0])]: #Initial check for keywords
                     Commands[c](command, args)
-                    print(Commands[c])
                     commandFound = True
             if not commandFound:
                 print('can\'t understand')
