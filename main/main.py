@@ -27,7 +27,7 @@ def main():
                     Commands[c](command, args)
                     commandFound = True
             if not commandFound:
-                if len(args) == 1:
+                if len(args) == 1: #If simple expression
                     Commands['PRINT'](command, args)
                 else:
                     print('Unknown Command')

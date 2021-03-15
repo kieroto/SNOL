@@ -60,7 +60,7 @@ class Operation:
                                     print(args)
                                 #check if datatypecompatible
                                 typeCompatible = self.numberChecker(args)
-                                if typeCompatible:
+                                if typeCompatible[0]:
                                     args[3] = self.arithmetic[keyword](args) 
                                     self.variables[args[1]] = args[3]
                                 else:
@@ -116,11 +116,15 @@ class Operation:
                     args[2] = self.variables[args[2]]
                     print(args)
                 typeCompatible = self.numberChecker(args)
-                if typeCompatible:
+                if typeCompatible[0]:
                     print(args[1] + args[2])
                     return args[1] + args[2]
                 else:
-                    print("operands not of the same type")  
+                    if typeCompatible[1]:
+                        None
+                    else:
+                        print("Operands not of the same type")
+                        
             else:
                 return args[4] + args[5]
         except IndexError:
@@ -136,11 +140,15 @@ class Operation:
                     args[2] = self.variables[args[2]]
                     print(args)
                 typeCompatible = self.numberChecker(args)
-                if typeCompatible:
+                if typeCompatible[0]:
                     print(args[1] - args[2])
                     return args[1] - args[2]
                 else:
-                    print("operands not of the same type")  
+                    if typeCompatible[1]:
+                        None
+                    if typeCompatible[0]:
+                        print("Operands not of the same type")
+                         
             else:
                 return args[4] - args[5] 
         except IndexError:
@@ -155,11 +163,14 @@ class Operation:
                     args[2] = self.variables[args[2]]
                     print(args)
                 typeCompatible = self.numberChecker(args)
-                if typeCompatible:
+                if typeCompatible[0]:
                     print(args[1] * args[2])
                     return args[1] * args[2]
                 else:
-                    print("operands not of the same type")  
+                    if typeCompatible[1]:
+                        None
+                    else:
+                        print("Operands not of the same type")
             else:
                 return args[4] * args[5] 
         except IndexError:
@@ -175,11 +186,14 @@ class Operation:
                     args[2] = self.variables[args[2]]
                     print(args)
                 typeCompatible = self.numberChecker(args)
-                if typeCompatible:
+                if typeCompatible[0]:
                     print(args[1] / args[2])
                     return args[1] / args[2]
                 else:
-                    print("operands not of the same type")  
+                    if typeCompatible[1]:
+                        None
+                    else:
+                        print("Operands not of the same type")
             else:
                 return args[4] / args[5] 
         except IndexError:
@@ -195,11 +209,15 @@ class Operation:
                     args[2] = self.variables[args[2]]
                     print(args)
                 typeCompatible = self.numberChecker(args)
-                if typeCompatible:
+                if typeCompatible[0]:
                     print(args[1] % args[2])
                     return args[1] % args[2]
                 else:
-                    print("operands not of the same type")  
+                    if typeCompatible[1]:
+                        None
+                    else:
+                        print("Operands not of the same type")
+                        None 
             else:
                 return args[4] % args[5]
         except IndexError:
@@ -221,6 +239,7 @@ class Operation:
     #convert string to float or int for operations
     def numberChecker(self, args):
         status = False
+        undefined_variable = False
         try:
             result = [int(float(x)) if int(float(x)) == float(x) else float(x)  for x in args[-2:]] #convert last 2 tokens to int/float
             print(result)
@@ -241,12 +260,13 @@ class Operation:
                 args[token1] = result[0]
                 args[token2] = result[1]
                 status = True
-            return status
+            return status, undefined_variable
 
         except ValueError as e:
             e = str(e).split()
             print("Undefined Variable " + str(e[-1:])) 
-            return status
+            undefined_variable = True
+            return status, undefined_variable
 
 
     def varNameChecker(self, args):
