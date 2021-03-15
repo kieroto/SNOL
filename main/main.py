@@ -1,5 +1,7 @@
 from operation import Operation
+
 def main():
+
     Commands = {
     'INTO': Operation.into,
     'BEG': Operation.beg,
@@ -25,7 +27,10 @@ def main():
                     Commands[c](command, args)
                     commandFound = True
             if not commandFound:
-                print('can\'t understand')
+                if len(args) == 1:
+                    Commands['PRINT'](command, args)
+                else:
+                    print('Unknown Command')
                 
 if __name__ == "__main__":
     main()
