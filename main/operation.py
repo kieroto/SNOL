@@ -4,9 +4,6 @@ class Operation:
     def __init__(self):
 
         self.variables = {
-            #sample dummy variables
-            "num1": 4,
-            "num2": 3,
         }
 
         self.keywords = {
@@ -31,38 +28,38 @@ class Operation:
 
         self.exit = 0
 
-    def into(self, args):
-        # args = ['INTO', 'new_variable_name', 'IS', 'value'/'assigned_variable_name']
-        # args = ['INTO', 'new_variable_name', 'IS', 'OPERATION', 'value'/'assigned_variable_name', 'value'/'assigned_variable_name']
+    def into(self, tokens):
+        # tokens = ['INTO', 'new_variable_name', 'IS', 'value'/'assigned_variable_name']
+        # tokens = ['INTO', 'new_variable_name', 'IS', 'OPERATION', 'value'/'assigned_variable_name', 'value'/'assigned_variable_name']
 
         #check syntax error
-        if self.varNameChecker(args[1]):
-            if args[2] == 'IS':
-                if len(args) == 4: #If No operation like ADD, SUB, MULT, ETC...
+        if self.varNameChecker(tokens[1]):
+            if tokens[2] == 'IS':
+                if len(tokens) == 4: #If No operation like ADD, SUB, MULT, ETC...
                     #check if valid variablename
-                        print("valid word")
-                        if args[3] in self.variables: #check if in variables dictionary, then assign
-                            print("arg[3] is in variables")
-                            self.variables[args[1]] = self.variables[args[3]]
-                        else: #if not, treat args[3] as a value and assign to variable
-                            args[3] = self.numConvert(args[3])
-                            self.variables[args[1]] = args[3][0]
+                        # print("valid word")
+                        if tokens[3] in self.variables: #check if in variables dictionary, then assign
+                            # print("arg[3] is in variables")
+                            self.variables[tokens[1]] = self.variables[tokens[3]]
+                        else: #if not, treat tokens[3] as a value and assign to variable
+                            tokens[3] = self.numConvert(tokens[3])
+                            self.variables[tokens[1]] = tokens[3][0]
                     
-                elif len(args) == 6:
+                elif len(tokens) == 6:
                         for keyword in self.arithmetic: # IF expression (ADD,SUB..) is encountered
-                            if args[3] == keyword: 
+                            if tokens[3] == keyword: 
                                 #Check if it is in dictionary
-                                if args[4] in self.variables:
-                                    args[4] = self.variables[args[4]]
-                                    print(args)
-                                if args[5] in self.variables:
-                                    args[5] = self.variables[args[5]]
-                                    print(args)
+                                if tokens[4] in self.variables:
+                                    tokens[4] = self.variables[tokens[4]]
+                                    print(tokens)
+                                if tokens[5] in self.variables:
+                                    tokens[5] = self.variables[tokens[5]]
+                                    print(tokens)
                                 #check if datatypecompatible
-                                typeCompatible = self.numberChecker(args)
+                                typeCompatible = self.numberChecker(tokens)
                                 if typeCompatible[0]:
-                                    args[3] = self.arithmetic[keyword](args) 
-                                    self.variables[args[1]] = args[3]
+                                    tokens[3] = self.arithmetic[keyword](tokens) 
+                                    self.variables[tokens[1]] = tokens[3]
                                 else:
                                     print("Incompatible data type")
 
@@ -72,53 +69,53 @@ class Operation:
                 print("Unknown command")
 
         else:
-            print("Unknown word " + str(args[1]))
+            print("Unknown word " + str(tokens[1]))
 
-    def beg(self, args):
-        # args = ['BEG', 'value'/'assigned_variable_name']
+    def beg(self, tokens):
+        # tokens = ['BEG', 'value'/'assigned_variable_name']
         try:
-            if self.varNameChecker(args[1]):
-                value = input("SNOL> Please enter value for "+ args[1] + "\nInput: ")
+            if self.varNameChecker(tokens[1]):
+                value = input("SNOL> Please enter value for "+ tokens[1] + "\nInput: ")
                 value = self.numConvert(value)
                 if value[1]:
-                    self.variables[args[1]] = value[0]
+                    self.variables[tokens[1]] = value[0]
                     
                     print(self.variables)
                 else:
                     print("Invalid number format")
             
             else:
-                print("Unknown word " + str(args[1]))
+                print("Unknown Command " + str(tokens[1]))
             
         except IndexError:
             print("Unknown Command")
 
-    def print(self, args):
-        # args = ['PRINT', 'assigned_variable_name']
+    def print(self, tokens):
+        # tokens = ['PRINT', 'assigned_variable_name']
         try:
-            if args[0] in self.variables:
-                print("SNOL> " + str(self.variables[args[0]]))
-            elif args[1] in self.variables:
-                print("SNOL> " + str(self.variables[args[1]]))
+            if tokens[0] in self.variables:
+                print("SNOL> " + str(self.variables[tokens[0]]))
+            elif tokens[1] in self.variables:
+                print("SNOL> " + str(self.variables[tokens[1]]))
             else:
                 print("Undeclared Variable")
         except IndexError:
             print("Undeclared Variable")
 
-    def add(self, args):
+    def add(self, tokens):
         try:
-            # args = ['ADD', 'value'/'variable_name', 'value'/'variable_name']
-            if len(args) <= 3:
-                if args[1] in self.variables:
-                    args[1] = self.variables[args[1]]
-                    print(args)
-                if args[2] in self.variables:
-                    args[2] = self.variables[args[2]]
-                    print(args)
-                typeCompatible = self.numberChecker(args)
+            # tokens = ['ADD', 'value'/'variable_name', 'value'/'variable_name']
+            if len(tokens) <= 3:
+                if tokens[1] in self.variables:
+                    tokens[1] = self.variables[tokens[1]]
+                    print(tokens)
+                if tokens[2] in self.variables:
+                    tokens[2] = self.variables[tokens[2]]
+                    print(tokens)
+                typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(args[1] + args[2])
-                    return args[1] + args[2]
+                    print(tokens[1] + tokens[2])
+                    return tokens[1] + tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
@@ -126,23 +123,23 @@ class Operation:
                         print("Operands not of the same type")
                         
             else:
-                return args[4] + args[5]
+                return tokens[4] + tokens[5]
         except IndexError:
-            print("Unknown command") 
+            print("Unknown Command") 
 
-    def sub(self, args):
+    def sub(self, tokens):
         try:
-            if len(args) <= 3:
-                if args[1] in self.variables:
-                    args[1] = self.variables[args[1]]
-                    print(args)
-                if args[2] in self.variables:
-                    args[2] = self.variables[args[2]]
-                    print(args)
-                typeCompatible = self.numberChecker(args)
+            if len(tokens) <= 3:
+                if tokens[1] in self.variables:
+                    tokens[1] = self.variables[tokens[1]]
+                    print(tokens)
+                if tokens[2] in self.variables:
+                    tokens[2] = self.variables[tokens[2]]
+                    print(tokens)
+                typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(args[1] - args[2])
-                    return args[1] - args[2]
+                    print(tokens[1] - tokens[2])
+                    return tokens[1] - tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
@@ -150,68 +147,68 @@ class Operation:
                         print("Operands not of the same type")
                          
             else:
-                return args[4] - args[5] 
+                return tokens[4] - tokens[5] 
         except IndexError:
-            print("Unknown command") 
-    def mult(self,args):
+            print("Unknown Command") 
+    def mult(self,tokens):
         try:
-            if len(args) <= 3:
-                if args[1] in self.variables:
-                    args[1] = self.variables[args[1]]
-                    print(args)
-                if args[2] in self.variables:
-                    args[2] = self.variables[args[2]]
-                    print(args)
-                typeCompatible = self.numberChecker(args)
+            if len(tokens) <= 3:
+                if tokens[1] in self.variables:
+                    tokens[1] = self.variables[tokens[1]]
+                    print(tokens)
+                if tokens[2] in self.variables:
+                    tokens[2] = self.variables[tokens[2]]
+                    print(tokens)
+                typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(args[1] * args[2])
-                    return args[1] * args[2]
+                    print(tokens[1] * tokens[2])
+                    return tokens[1] * tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
                     else:
                         print("Operands not of the same type")
             else:
-                return args[4] * args[5] 
+                return tokens[4] * tokens[5] 
         except IndexError:
             print("Unknown command") 
         
-    def div(self,args):
+    def div(self,tokens):
         try:
-            if len(args) <= 3:
-                if args[1] in self.variables:
-                    args[1] = self.variables[args[1]]
-                    print(args)
-                if args[2] in self.variables:
-                    args[2] = self.variables[args[2]]
-                    print(args)
-                typeCompatible = self.numberChecker(args)
+            if len(tokens) <= 3:
+                if tokens[1] in self.variables:
+                    tokens[1] = self.variables[tokens[1]]
+                    print(tokens)
+                if tokens[2] in self.variables:
+                    tokens[2] = self.variables[tokens[2]]
+                    print(tokens)
+                typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(args[1] / args[2])
-                    return args[1] / args[2]
+                    print(tokens[1] / tokens[2])
+                    return tokens[1] / tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
                     else:
                         print("Operands not of the same type")
             else:
-                return args[4] / args[5] 
+                return tokens[4] / tokens[5] 
         except IndexError:
             print("Unknown command") 
 
-    def mod(self,args):
+    def mod(self,tokens):
         try:
-            if len(args) <= 3:
-                if args[1] in self.variables:
-                    args[1] = self.variables[args[1]]
-                    print(args)
-                if args[2] in self.variables:
-                    args[2] = self.variables[args[2]]
-                    print(args)
-                typeCompatible = self.numberChecker(args)
+            if len(tokens) <= 3:
+                if tokens[1] in self.variables:
+                    tokens[1] = self.variables[tokens[1]]
+                    print(tokens)
+                if tokens[2] in self.variables:
+                    tokens[2] = self.variables[tokens[2]]
+                    print(tokens)
+                typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(args[1] % args[2])
-                    return args[1] % args[2]
+                    print(tokens[1] % tokens[2])
+                    return tokens[1] % tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
@@ -219,32 +216,32 @@ class Operation:
                         print("Operands not of the same type")
                         None 
             else:
-                return args[4] % args[5]
+                return tokens[4] % tokens[5]
         except IndexError:
             print("Unknown command") 
 
-    def exit(self, args):
+    def exit(self, tokens):
         print("Interpreter is now terminated...")
         self.exit = 1
 
-    def numConvert(self, args):
+    def numConvert(self, tokens):
         try:
             try:
-                return int(args), True
+                return int(tokens), True
             except ValueError:
-                return float(args), True
+                return float(tokens), True
         except ValueError:
-            return args, False
+            return tokens, False
 
     #convert string to float or int for operations
-    def numberChecker(self, args):
+    def numberChecker(self, tokens):
         status = False
         undefined_variable = False
         try:
-            result = [int(float(x)) if int(float(x)) == float(x) else float(x)  for x in args[-2:]] #convert last 2 tokens to int/float
+            result = [int(float(x)) if int(float(x)) == float(x) else float(x)  for x in tokens[-2:]] #convert last 2 tokens to int/float
             print(result)
 
-            if len(args) <= 3:
+            if len(tokens) <= 3:
                 token1 = 1
                 token2 = 2
             else:
@@ -252,13 +249,13 @@ class Operation:
                 token2 = 5
 
             if isinstance(result[0], int) and isinstance(result[1], int):
-                args[token1] = result[0]
-                args[token2] = result[1]
+                tokens[token1] = result[0]
+                tokens[token2] = result[1]
                 status = True
 
             elif isinstance(result[0], float) and isinstance(result[1], float):
-                args[token1] = result[0]
-                args[token2] = result[1]
+                tokens[token1] = result[0]
+                tokens[token2] = result[1]
                 status = True
             return status, undefined_variable
 
@@ -269,8 +266,8 @@ class Operation:
             return status, undefined_variable
 
 
-    def varNameChecker(self, args):
-        return str(args).isidentifier() and not (args in self.keywords)
+    def varNameChecker(self, tokens):
+        return str(tokens).isidentifier() and not (tokens in self.keywords)
     # https://stackoverflow.com/questions/36330860/pythonically-check-if-a-variable-name-is-valid
 #       User this for typchecking
 #         >>> 'X'.isidentifier()

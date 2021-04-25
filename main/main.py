@@ -18,17 +18,16 @@ def main():
 
     while (command.exit == 0):
         line = input("Command: ")
-        args = line.split()
-
-        if len(args) > 0:
+        tokens = line.split() #tokenize input
+        if len(tokens) > 0:
             commandFound = False
             for c in Commands.keys():
-                if args[0] == c[:len(args[0])]: #Initial check for keywords
-                    Commands[c](command, args)
+                if tokens[0] == c[:len(tokens[0])]: #Initial check for keywords
+                    Commands[c](command, tokens)
                     commandFound = True
             if not commandFound:
-                if len(args) == 1: #If simple expression
-                    Commands['PRINT'](command, args)
+                if len(tokens) == 1: #If simple expression
+                    Commands['PRINT'](command, tokens)
                 else:
                     print('Unknown Command')
                 
