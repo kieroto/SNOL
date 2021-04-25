@@ -51,10 +51,10 @@ class Operation:
                                 #Check if it is in dictionary
                                 if tokens[4] in self.variables:
                                     tokens[4] = self.variables[tokens[4]]
-                                    print(tokens)
+                                    # print(tokens)
                                 if tokens[5] in self.variables:
                                     tokens[5] = self.variables[tokens[5]]
-                                    print(tokens)
+                                    # print(tokens)
                                 #check if datatypecompatible
                                 typeCompatible = self.numberChecker(tokens)
                                 if typeCompatible[0]:
@@ -63,7 +63,7 @@ class Operation:
                                 else:
                                     print("Incompatible data type")
 
-                print(self.variables)
+                # print(self.variables)
 
             else:
                 print("Unknown command")
