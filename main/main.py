@@ -18,7 +18,8 @@ def main():
 
     while (command.exit == 0):
         line = input("Command: ")
-        tokens = line.split() #tokenize input
+        tokens = line.split()
+
         if len(tokens) > 0:
             commandFound = False
             for c in Commands.keys():

@@ -79,8 +79,6 @@ class Operation:
                 value = self.numConvert(value)
                 if value[1]:
                     self.variables[tokens[1]] = value[0]
-                    
-                    print(self.variables)
                 else:
                     print("Invalid number format")
             
@@ -93,14 +91,12 @@ class Operation:
     def print(self, tokens):
         # tokens = ['PRINT', 'assigned_variable_name']
         try:
-            if tokens[0] in self.variables:
-                print("SNOL> " + str(self.variables[tokens[0]]))
+            if len(tokens) == 1 and tokens[0] in self.variables:
+                print("")
             elif tokens[1] in self.variables:
                 print("SNOL> " + str(self.variables[tokens[1]]))
-            else:
-                print("Undeclared Variable")
         except IndexError:
-            print("Undeclared Variable")
+            print("Unknown Command")
 
     def add(self, tokens):
         try:
@@ -239,7 +235,7 @@ class Operation:
         undefined_variable = False
         try:
             result = [int(float(x)) if int(float(x)) == float(x) else float(x)  for x in tokens[-2:]] #convert last 2 tokens to int/float
-            print(result)
+            # print(result)
 
             if len(tokens) <= 3:
                 token1 = 1
