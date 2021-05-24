@@ -1,8 +1,8 @@
-#TO DO
+#ISSUES: Takes float with .0 as data typpe int. It should take 0 to 9
 
 class Operation:
     def __init__(self):
-
+        #Dictionary to store variables and its value
         self.variables = {}
 
         self.keywords = {
@@ -27,22 +27,24 @@ class Operation:
 
         self.exit = 0
 
-
+    #HELPER FUNCTIONS
     # Since tokens input is in string, we will need a function that will convert digits to value types INT or FLOAT
-    def numConvert(self, tokens):
+    def numConvert(self, token):
         try:
             try:
-                return int(tokens), True
+                return int(token), True
             except ValueError:
-                return float(tokens), True
+                return float(token), True
         except ValueError:
-            return tokens, False
+            return token, False
 
-    # This function converts and checks if all operands in an operation is of the same type
-    #TODO: MOD Operation should only allow integer type
+    #This function converts and checks if all operands in an operation is of the same type
+    #Returns a tuple, 
+    #tuple[0] is if it succesfully converted arithmetic operands, 
+    #[1] boolean value depending if the operand is a valid variable 
     def numberChecker(self, tokens):
-        status = False
-        undefined_variable = False
+        status = False #status if succesfully converted 
+        undefined_variable = False #if the variable is undefined
         try:
             result = [int(float(x)) if int(float(x)) == float(x) else float(x)  for x in tokens[-2:]] #convert last 2 tokens to int/float
             # print(result)
@@ -73,50 +75,59 @@ class Operation:
     
 
     # Variable format checker
+    # returns true if variable name is valid, (not in keywords or not an identifier)
     def varNameChecker(self, tokens):
         return str(tokens).isidentifier() and not (tokens in self.keywords)
-    # https://stackoverflow.com/questions/36330860/pythonically-check-if-a-variable-name-is-valid
-#       User this for typchecking
+#       Use this for typchecking
 #         >>> 'X'.isidentifier()
 #               True
 
+
+    # MAIN OPERATIONS
     # Assignment operation
     def into(self, tokens):
         # simple assignment : tokens = ['INTO', 'new_variable_name', 'IS', 'value'/'assigned_variable_name']
         # assignment with operation : tokens = ['INTO', 'new_variable_name', 'IS', 'OPERATION', 'value'/'assigned_variable_name', 'value'/'assigned_variable_name']
 
         #check syntax error
-        if self.varNameChecker(tokens[1]):
-            if tokens[2] == 'IS':
-                if len(tokens) == 4: # If simple assignment
-                        if tokens[3] in self.variables: #check if in variables dictionary, then assign to tokens[1]
-                            self.variables[tokens[1]] = self.variables[tokens[3]]
-                        else: #if not in variables, treat tokens[3], check if a value and assign if it is a valid value
-                            tokens[3] = self.numConvert(tokens[3])
-                            self.variables[tokens[1]] = tokens[3][0]
-                    
-                elif len(tokens) == 6: #if assignment with operation
-                        for keyword in self.arithmetic: # IF expression (ADD,SUB..) is encountered
-                            if tokens[3] == keyword: 
-                                #Check if it is in dictionary
-                                if tokens[4] in self.variables:
-                                    tokens[4] = self.variables[tokens[4]]
-      
-                                if tokens[5] in self.variables:
-                                    tokens[5] = self.variables[tokens[5]]
-                            
-                                #check if datatypecompatible
-                                typeCompatible = self.numberChecker(tokens)
-                                if typeCompatible[0]:
-                                    tokens[3] = self.arithmetic[keyword](tokens) 
-                                    self.variables[tokens[1]] = tokens[3]
+        try:
+            if self.varNameChecker(tokens[1]):
+                if tokens[2] == 'IS':
+                    if len(tokens) == 4: # If simple assignment
+                            if tokens[3] in self.variables: #check if in variables dictionary, then assign to tokens[1]
+                                self.variables[tokens[1]] = self.variables[tokens[3]]
+                            else: #if not in variables, treat tokens[3], check if a value and assign if it is a valid value
+                                tokens[3] = self.numConvert(tokens[3])
+                                if tokens[3][1]:
+                                    self.variables[tokens[1]] = tokens[3][0]
                                 else:
-                                    print("Incompatible data type")
-            else:
-                print("Unknown command! Does not match any valid command of the language")
+                                    print("Invalid number format")
+                        
+                    elif len(tokens) == 6: #if assignment with operation
+                            for keyword in self.arithmetic: # IF expression (ADD,SUB..) is encountered
+                                if tokens[3] == keyword: 
+                                    #Check if it is in dictionary
+                                    if tokens[4] in self.variables:
+                                        tokens[4] = self.variables[tokens[4]]
+        
+                                    if tokens[5] in self.variables:
+                                        tokens[5] = self.variables[tokens[5]]
+                                
+                                    #check if datatypecompatible
+                                    typeCompatible = self.numberChecker(tokens)
+                                    if typeCompatible[0]:
+                                        tokens[3] = self.arithmetic[keyword](tokens) 
+                                        self.variables[tokens[1]] = tokens[3]
+                                    else:
+                                        print("Incompatible data type")
+                else:
+                    print("Unknown command! Does not match any valid command of the language")
 
-        else:
-            print("Unknown word " + str(tokens[1]))
+            else:
+                print("Unknown word " + str(tokens[1]))
+
+        except IndexError:
+            print("Unknown command! Does not match any valid command of the language")
 
     def beg(self, tokens):
         # tokens = ['BEG', 'value'/'assigned_variable_name']
@@ -254,8 +265,11 @@ class Operation:
                     print(tokens)
                 typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(tokens[1] % tokens[2])
-                    return tokens[1] % tokens[2]
+                    if isinstance(tokens[1], int) and isinstance(tokens[2], int):
+                        print(tokens[1] % tokens[2])
+                        return tokens[1] % tokens[2]
+                    else:
+                        print("MOD operation only allows integer type")
                 else:
                     if typeCompatible[1]:
                         None
@@ -263,10 +277,14 @@ class Operation:
                         print("Error! Operands must be of the same type in an arithmetic operation!")
                         None 
             else:
-                return tokens[4] % tokens[5]
+                if isinstance(tokens[4], int) and isinstance(tokens[4], int):
+                    return tokens[4] % tokens[5]
+                else:
+                    print("MOD operation only allows integer type")
         except IndexError:
-            print("Unknown command") 
+            print("Unknown command.") 
 
+    # Mutates exit variable to 1, to exit the loop
     def exit(self, tokens):
         print("Interpreter is now terminated...")
         self.exit = 1
