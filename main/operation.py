@@ -121,13 +121,13 @@ class Operation:
                                     else:
                                         print("Incompatible data type")
                 else:
-                    print("Unknown command! Does not match any valid command of the language")
+                    self.error(2)
 
             else:
                 print("Unknown word " + str(tokens[1]))
 
         except IndexError:
-            print("Unknown command! Does not match any valid command of the language")
+            self.error(2)
 
     def beg(self, tokens):
         # tokens = ['BEG', 'value'/'assigned_variable_name']
@@ -144,7 +144,7 @@ class Operation:
                 print("Unknown Command " + str(tokens[1]))
             
         except IndexError:
-            print("Unknown Command")
+            self.error(1)
 
     def print(self, tokens):
         # tokens = ['PRINT', 'assigned_variable_name']
@@ -157,7 +157,7 @@ class Operation:
             else:
                 print("SNOL> " + tokens[1])
         except IndexError:
-            print("Unknown Command")
+            self.error(1)
 
     def add(self, tokens):
         try:
@@ -165,13 +165,13 @@ class Operation:
             if len(tokens) <= 3:
                 if tokens[1] in self.variables:
                     tokens[1] = self.variables[tokens[1]]
-                    print(tokens)
+         
                 if tokens[2] in self.variables:
                     tokens[2] = self.variables[tokens[2]]
-                    print(tokens)
+
                 typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(tokens[1] + tokens[2])
+                  
                     return tokens[1] + tokens[2]
                 else:
                     if typeCompatible[1]:
@@ -182,91 +182,79 @@ class Operation:
             else:
                 return tokens[4] + tokens[5]
         except IndexError:
-            print("Unknown Command") 
+            self.error(1)
 
     def sub(self, tokens):
         try:
             if len(tokens) <= 3:
                 if tokens[1] in self.variables:
                     tokens[1] = self.variables[tokens[1]]
-                    print(tokens)
                 if tokens[2] in self.variables:
                     tokens[2] = self.variables[tokens[2]]
-                    print(tokens)
                 typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(tokens[1] - tokens[2])
                     return tokens[1] - tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
                     if typeCompatible[0]:
-                        print("Error! Operands must be of the same type in an arithmetic operation!")
+                        self.error(3)
                          
             else:
                 return tokens[4] - tokens[5] 
         except IndexError:
-            print("Unknown Command") 
+            self.error(1)
 
     def mult(self,tokens):
         try:
             if len(tokens) <= 3:
                 if tokens[1] in self.variables:
                     tokens[1] = self.variables[tokens[1]]
-                    print(tokens)
                 if tokens[2] in self.variables:
                     tokens[2] = self.variables[tokens[2]]
-                    print(tokens)
                 typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(tokens[1] * tokens[2])
                     return tokens[1] * tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
                     else:
-                        print("Error! Operands must be of the same type in an arithmetic operation!")
+                        self.error(3)
             else:
                 return tokens[4] * tokens[5] 
         except IndexError:
-            print("Unknown command") 
+            self.error(1)
         
     def div(self,tokens):
         try:
             if len(tokens) <= 3:
                 if tokens[1] in self.variables:
                     tokens[1] = self.variables[tokens[1]]
-                    print(tokens)
                 if tokens[2] in self.variables:
                     tokens[2] = self.variables[tokens[2]]
-                    print(tokens)
                 typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    print(tokens[1] / tokens[2])
                     return tokens[1] / tokens[2]
                 else:
                     if typeCompatible[1]:
                         None
                     else:
-                        print("Error! Operands must be of the same type in an arithmetic operation!")
+                        self.error(3)
             else:
                 return tokens[4] / tokens[5] 
         except IndexError:
-            print("Unknown command") 
+            self.error(1)
 
     def mod(self,tokens):
         try:
             if len(tokens) <= 3:
                 if tokens[1] in self.variables:
                     tokens[1] = self.variables[tokens[1]]
-                    print(tokens)
                 if tokens[2] in self.variables:
                     tokens[2] = self.variables[tokens[2]]
-                    print(tokens)
                 typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
                     if isinstance(tokens[1], int) and isinstance(tokens[2], int):
-                        print(tokens[1] % tokens[2])
                         return tokens[1] % tokens[2]
                     else:
                         print("MOD operation only allows integer type")
@@ -274,7 +262,7 @@ class Operation:
                     if typeCompatible[1]:
                         None
                     else:
-                        print("Error! Operands must be of the same type in an arithmetic operation!")
+                        self.error(2)
                         None 
             else:
                 if isinstance(tokens[4], int) and isinstance(tokens[4], int):
@@ -282,9 +270,16 @@ class Operation:
                 else:
                     print("MOD operation only allows integer type")
         except IndexError:
-            print("Unknown command.") 
-
+            self.error(1)
     # Mutates exit variable to 1, to exit the loop
+    def error(self, errcode):
+        keywords = {
+            1: 'Unknown command',
+            2: 'Unknow command language blabla',
+            3: 'Error! Operands must be of the same type in an arithmetic operation!'
+        }
+        print(keywords[errcode])
+        
     def exit(self, tokens):
         print("Interpreter is now terminated...")
         self.exit = 1
