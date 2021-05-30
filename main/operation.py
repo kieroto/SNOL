@@ -258,6 +258,29 @@ class Operation:
                 return str(tokens[4] * tokens[5])
         except IndexError:
              self.error('cmdErr')
+
+    def div(self, tokens):
+        try:
+            if len(tokens) <= 3:
+                if tokens[1] in self.variables:
+                    tokens[1] = str(self.variables[tokens[1]])
+                    print(str(tokens[1]))
+                if tokens[2] in self.variables:
+                    tokens[2] = str(self.variables[tokens[2]])
+                    print(str(tokens[1]))
+                typeCompatible = self.numberChecker(tokens)
+                if typeCompatible[0]:
+                    print("Type compatible")
+                    return str(tokens[1] / tokens[2])
+                else:
+                    if typeCompatible[1]:
+                        self.error('varErr')
+                    else:
+                        self.error('typeErr')
+            elif len(tokens) <= 6:
+                return str(tokens[4] / tokens[5])
+        except IndexError:
+                self.error('cmdErr')
     def mod(self,tokens):
         try:
             if len(tokens) <= 3:
