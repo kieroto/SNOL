@@ -1,7 +1,6 @@
 from operation import Operation
 
 def main():
-    
     Commands = {
     'INTO': Operation.into,
     'BEG': Operation.beg,
