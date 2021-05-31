@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['/Users/root/Developer/snol/SNOL/main'],
+             pathex=['C:\\Users\\root\\Documents\\GitHub\\SNOL\\main'],
              binaries=[],
              datas=[],
              hiddenimports=[],
