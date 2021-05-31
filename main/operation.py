@@ -38,29 +38,26 @@ class Operation:
         except ValueError:
             return token, False
 
-    #This function converts and checks if all operands in an operation is of the same type
-    #Returns a tuple, 
-    #tuple[0] is if it succesfully converted arithmetic operands, 
-    #[1] boolean value depending if the operand is a valid variable 
+    #This function converts and and checks if all operands in an operation is of the same type
+
     def numberChecker(self, tokens):
         converted = False #status if succesfully converted 
-        valid_word = False
-        tokenscopy = tokens
+        
+        tokenscopy = tokens #create copy of tokens and convert to str last two elements
         tokenscopy[-2] = str(tokens[-2])
-        tokenscopy[-1] = str(tokens[-1])
+        tokenscopy[-1] = str(tokens[-1]) 
       
         try:
-
             result = [int(s) if s.isdigit() else float(s) for s in tokenscopy[-2:]]
             # evaluate the given string containing a Python expression. It could convert the string to either float or int automatically.
 
-            # if self.numConvert((tokens[-1])):  
-            if len(tokens) <= 3:
+            if len(tokens) == 3:
                 token1 = 1
                 token2 = 2
-            elif len(tokens) <= 6:
+            elif len(tokens) == 6:
                 token1 = 4
                 token2 = 5
+
             if (isinstance(result[0], float) and isinstance(result[1], float)) or (isinstance(result[0], int) and isinstance(result[1], int)):
                 if isinstance(result[0], int) and isinstance(result[1], int):
                     tokens[token1] = result[0]
@@ -78,22 +75,19 @@ class Operation:
    
             else:
                 converted = True
-                # self.error('typeErr')
             
-            return converted, valid_word
+            return converted
 
         except ValueError:
             for token in tokens[-2:]:
                 if not self.varNameChecker(token) and not self.numConvert(token)[1]:
                     self.error('wordErr', token)
-                    valid_word = False
                     break
                 elif not token in self.variables and not self.numConvert(token)[1]:
                     self.error('varErr', token)
-                    valid_word = True
+           
                     break
-            return converted, valid_word
-    
+            return converted
 
     # Variable format checker
     # returns true if variable name is valid, (not in keywords or not an identifier)
@@ -102,6 +96,7 @@ class Operation:
 #       Use this for typchecking
 #         >>> 'X'.isidentifier()
 #               True
+
     # MAIN OPERATIONS
     # Assignment operation
     def into(self, tokens):
@@ -113,25 +108,20 @@ class Operation:
             if self.varNameChecker(tokens[1]):
                 if tokens[2] == 'IS':
                     if len(tokens) == 4: # If simple assignment
-                            if tokens[3] in self.variables: #check if in variables dictionary, then assign to tokens[1]
-                                self.variables[tokens[1]] = self.variables[tokens[3]]
-                            else: #if not in variables, treat tokens[3], check if a value and assign if it is a valid value
-                                tokens[3] = self.numConvert(tokens[3])
-                                if tokens[3][1]:
-                                    self.variables[tokens[1]] = tokens[3][0]
-                                else:
-                                    self.error('formatErr')
+                        print(str(len(tokens)))
+                        if tokens[3] in self.variables: #check if in variables dictionary, then assign to tokens[1]
+                            self.variables[tokens[1]] = self.variables[tokens[3]]
+                        else: #if not in variables, treat tokens[3], check if a value and assign if it is a valid value
+                            tokens[3] = self.numConvert(tokens[3])
+                            if tokens[3][1]:
+                                self.variables[tokens[1]] = tokens[3][0]
+                            else:
+                                self.error('formatErr')
                         
                     elif len(tokens) >= 6: #if assignment with operation
                             if tokens[3] in self.arithmetic: 
                                 tokens[3] = self.arithmetic[tokens[3]](tokens) 
                                 self.variables[tokens[1]] = tokens[3]
-                                # if validVariable and validVariable2:
-                                #     self.error('typeErr')
-                                # elif not typeCompatible[0]:
-                                #     self.error("typeErr")
-                                # else:
-                                #     self.error("varErr")
                             else:
                                 self.error('cmdErr')
                     else:
@@ -163,7 +153,6 @@ class Operation:
 
     def print(self, tokens):
         # tokens = ['PRINT', 'assigned_variable_name']
-
         try:
             if len(tokens) == 1 and tokens[0] in self.variables:
                 print("")
@@ -176,27 +165,17 @@ class Operation:
                     self.error('varErr', tokens[1])
         except IndexError:
             self.error('cmdErr')
-
+    
     def add(self, tokens):
         try:
-            #check if valid word
-            if len(tokens) == 3:
-                if tokens[1] in self.variables:
-                    tokens[1] = self.variables[tokens[1]]
-                if tokens[2] in self.variables:
-                    tokens[2] = self.variables[tokens[2]]
+            if len(tokens) == 3 or len(tokens) == 6:
+                if tokens[-1] in self.variables:
+                    tokens[-1] = self.variables[tokens[-1]]
+                if tokens[-2] in self.variables:
+                    tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
                 if numChecker[0]:
-                    return tokens[1] + tokens[2]
-
-            elif len(tokens) == 6:
-                if tokens[4] in self.variables:
-                    tokens[4] = self.variables[tokens[4]]
-                if tokens[5] in self.variables:
-                    tokens[5] = self.variables[tokens[5]]
-                numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[4] + tokens[5]
+                    return tokens[-1] + tokens[-2]
             else:
                 self.error('cmdErr')
 
@@ -205,24 +184,14 @@ class Operation:
    
     def sub(self, tokens):
         try:
-            #check if valid word
-            if len(tokens) == 3:
-                if tokens[1] in self.variables:
-                    tokens[1] = self.variables[tokens[1]]
-                if tokens[2] in self.variables:
-                    tokens[2] = self.variables[tokens[2]]
+            if len(tokens) == 3 or len(tokens) == 6:
+                if tokens[-1] in self.variables:
+                    tokens[-1] = self.variables[tokens[-1]]
+                if tokens[-2] in self.variables:
+                    tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
                 if numChecker[0]:
-                    return tokens[1] - tokens[2]
-
-            elif len(tokens) == 6:
-                if tokens[4] in self.variables:
-                    tokens[4] = self.variables[tokens[4]]
-                if tokens[5] in self.variables:
-                    tokens[5] = self.variables[tokens[5]]
-                numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[4] - tokens[5]
+                    return tokens[-1] - tokens[-2]
             else:
                 self.error('cmdErr')
 
@@ -231,24 +200,14 @@ class Operation:
 
     def mult(self, tokens):
         try:
-            #check if valid word
-            if len(tokens) == 3:
-                if tokens[1] in self.variables:
-                    tokens[1] = self.variables[tokens[1]]
-                if tokens[2] in self.variables:
-                    tokens[2] = self.variables[tokens[2]]
+            if len(tokens) == 3 or len(tokens) == 6:
+                if tokens[-1] in self.variables:
+                    tokens[-1] = self.variables[tokens[-1]]
+                if tokens[-2] in self.variables:
+                    tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
                 if numChecker[0]:
-                    return tokens[1] * tokens[2]
-
-            elif len(tokens) == 6:
-                if tokens[4] in self.variables:
-                    tokens[4] = self.variables[tokens[4]]
-                if tokens[5] in self.variables:
-                    tokens[5] = self.variables[tokens[5]]
-                numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[4] * tokens[5]
+                    return tokens[-1] * tokens[-2]
             else:
                 self.error('cmdErr')
 
@@ -257,75 +216,35 @@ class Operation:
 
     def div(self, tokens):
         try:
-            #check if valid word
-            if len(tokens) == 3:
-                if tokens[1] in self.variables:
-                    tokens[1] = self.variables[tokens[1]]
-                if tokens[2] in self.variables:
-                    tokens[2] = self.variables[tokens[2]]
+           
+            if len(tokens) == 3 or len(tokens) == 6:
+                if tokens[-1] in self.variables:
+                    tokens[-1] = self.variables[tokens[-1]]
+                if tokens[-2] in self.variables:
+                    tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
                 if numChecker[0]:
-                    return tokens[1] / tokens[2]
-
-            elif len(tokens) == 6:
-                if tokens[4] in self.variables:
-                    tokens[4] = self.variables[tokens[4]]
-                if tokens[5] in self.variables:
-                    tokens[5] = self.variables[tokens[5]]
-                numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[4] / tokens[5]
+                    return tokens[-1] / tokens[-2]
             else:
                 self.error('cmdErr')
 
         except IndexError:
             self.error('cmdErr')
 
-    def mod(self, tokens):
-        try:
-            #check if valid word
-            if len(tokens) == 3:
-                if tokens[1] in self.variables:
-                    tokens[1] = self.variables[tokens[1]]
-                if tokens[2] in self.variables:
-                    tokens[2] = self.variables[tokens[2]]
-                numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[1] - tokens[2]
-
-            elif len(tokens) == 6:
-                if tokens[4] in self.variables:
-                    tokens[4] = self.variables[tokens[4]]
-                if tokens[5] in self.variables:
-                    tokens[5] = self.variables[tokens[5]]
-                numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[4] - tokens[5]
-            else:
-                self.error('cmdErr')
-
-        except IndexError:
-            self.error('cmdErr')
     def mod(self,tokens):
         try:
             if len(tokens) == 3:
-                if tokens[1] in self.variables:
-                    tokens[1] = str(self.variables[tokens[1]])
-                if tokens[2] in self.variables:
-                    tokens[2] = str(self.variables[tokens[2]])
+                if tokens[-1] in self.variables:
+                    tokens[-1] = str(self.variables[tokens[-1]])
+                if tokens[-2] in self.variables:
+                    tokens[-2] = str(self.variables[tokens[-2]])
                 typeCompatible = self.numberChecker(tokens)
                 if typeCompatible[0]:
-                    if isinstance(tokens[1], int) and isinstance(tokens[2], int):
-                        return tokens[1] % tokens[2]
+                    if isinstance(tokens[-1], int) and isinstance(tokens[-2], int):
+                        return tokens[-1] % tokens[-2]
                     else:
                         print("MOD operation only allows integer type")
-            elif len(tokens) == 6:
-                typeCompatible = self.numberChecker(tokens)
-                if typeCompatible[0]:
-                    if isinstance(tokens[4], int) and isinstance(tokens[5], int):
-                        return tokens[4] % tokens[5]
-                    else:
-                        print("MOD operation only allows integer type")
+
         except IndexError:
             self.error('cmdErr')
     # Mutates exit variable to 1, to exit the loop
