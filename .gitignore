@@ -1,4 +1,5 @@
 .DS_Store
 .gitattributes
-__pycache__/
+
+main/__pycache__/
 main/.DS_Store
