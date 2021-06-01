@@ -108,7 +108,6 @@ class Operation:
             if self.varNameChecker(tokens[1]):
                 if tokens[2] == 'IS':
                     if len(tokens) == 4: # If simple assignment
-                        print(str(len(tokens)))
                         if tokens[3] in self.variables: #check if in variables dictionary, then assign to tokens[1]
                             self.variables[tokens[1]] = self.variables[tokens[3]]
                         else: #if not in variables, treat tokens[3], check if a value and assign if it is a valid value
