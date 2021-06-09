@@ -173,7 +173,7 @@ class Operation:
                 if tokens[-2] in self.variables:
                     tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
+                if numChecker:
                     return tokens[-1] + tokens[-2]
             else:
                 self.error('cmdErr')
@@ -189,8 +189,8 @@ class Operation:
                 if tokens[-2] in self.variables:
                     tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[-1] - tokens[-2]
+                if numChecker:
+                    return tokens[-2] - tokens[-1]
             else:
                 self.error('cmdErr')
 
@@ -205,7 +205,7 @@ class Operation:
                 if tokens[-2] in self.variables:
                     tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
+                if numChecker:
                     return tokens[-1] * tokens[-2]
             else:
                 self.error('cmdErr')
@@ -222,8 +222,8 @@ class Operation:
                 if tokens[-2] in self.variables:
                     tokens[-2] = self.variables[tokens[-2]]
                 numChecker = self.numberChecker(tokens)
-                if numChecker[0]:
-                    return tokens[-1] / tokens[-2]
+                if numChecker:
+                    return tokens[-2] / tokens[-1]
             else:
                 self.error('cmdErr')
 
@@ -238,9 +238,9 @@ class Operation:
                 if tokens[-2] in self.variables:
                     tokens[-2] = str(self.variables[tokens[-2]])
                 typeCompatible = self.numberChecker(tokens)
-                if typeCompatible[0]:
+                if typeCompatible:
                     if isinstance(tokens[-1], int) and isinstance(tokens[-2], int):
-                        return tokens[-1] % tokens[-2]
+                        return tokens[-2] % tokens[-1]
                     else:
                         print("MOD operation only allows integer type")
 
